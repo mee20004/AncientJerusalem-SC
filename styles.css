@@ -429,6 +429,14 @@ body.landing-page.map-expanded .expand-button {
   transition:
     border-color 520ms ease,
     box-shadow 520ms ease;
+ }
+
+.map-canvas needle-engine {
+  border-radius: 18px;
+  overflow: hidden;
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 body.landing-page.map-expanded .map-canvas {

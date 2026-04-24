@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Location Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="location-styles.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@needle-tools/engine/dist/needle-engine.min.js"></script>
+  </head>
+  <body class="landing-page">
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="index.html">Ancient Jerusalem</a>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="map.html">Map View</a>
+          <a href="Gallery.html">Location Gallery</a>
+        </nav>
+      </header>
+      <main class="dashboard-layout">
+        <section class="content-column">
+          <div id="location-content"></div>
+        </section>
+        <aside class="map-column">
+          <section class="map-card">
+            <div class="map-card-header">
+              <h2>3D Map</h2>
+              <a class="expand-button" href="map.html" aria-label="Expand map panel">
+                ⤢
+              </a>
+            </div>
+            <div class="map-canvas" aria-label="Blank map preview">
+              <div class="map-canvas-clip">
+                <needle-engine src="assets/test.glb" camera-position="0 1 1" style="width:100%;height:110%;display:block;"></needle-engine>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </main>
+    </div>
+    <script src="data.js"></script>
+    <script>
+      // Get id from URL
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      let post = null;
+      if (window.ancientJerusalemPosts && id) {
+        post = window.ancientJerusalemPosts.find(p => String(p.id) === id);
+      }
+      if (post && post.image) {
+        document.body.style.background = `url('${post.image}') center / cover fixed no-repeat`;
+      }
+      // Optionally, display the post title or other info
+      if (post) {
+        document.getElementById('location-content').innerHTML = `
+          <section class="hero-copy">
+            <h1>${post.title}</h1>
+            <p>${post.excerpt}</p>
+          </section>
+        `;
+      }
+
+      // Map expand/collapse logic (copied from index.html)
+      const pageBody = document.body;
+      const expandButton = document.querySelector(".expand-button");
+      const topbar = document.querySelector(".topbar");
+
+      if (expandButton) {
+        const syncExpandedMapTop = () => {
+          if (!topbar) {
+            return;
+          }
+
+          const topbarBottom = topbar.getBoundingClientRect().bottom;
+          pageBody.style.setProperty("--expanded-map-top", `${Math.ceil(topbarBottom + 12)}px`);
+        };
+
+        const setMapExpanded = (expanded) => {
+          if (expanded && window.matchMedia("(max-width: 980px)").matches) {
+            window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+          }
+
+          pageBody.classList.toggle("map-expanded", expanded);
+          expandButton.setAttribute("aria-expanded", String(expanded));
+          expandButton.setAttribute(
+            "aria-label",
+            expanded ? "Collapse map panel" : "Expand map panel"
+          );
+          expandButton.textContent = expanded ? "✕" : "⤢";
+
+          window.requestAnimationFrame(syncExpandedMapTop);
+        };
+
+        syncExpandedMapTop();
+        window.addEventListener("resize", syncExpandedMapTop);
+
+        expandButton.addEventListener("click", (event) => {
+          event.preventDefault();
+          setMapExpanded(!pageBody.classList.contains("map-expanded"));
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && pageBody.classList.contains("map-expanded")) {
+            setMapExpanded(false);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

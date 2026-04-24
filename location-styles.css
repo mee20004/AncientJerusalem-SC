@@ -1,3 +1,32 @@
+body.landing-page.map-expanded .map-column,
+body.landing-page.map-expanded .map-card,
+body.landing-page.map-expanded .map-canvas,
+body.landing-page.map-expanded .map-canvas-clip {
+  overflow: hidden !important;
+}
+.content-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 0;
+  height: 100%;
+  /* overflow: visible allows box-shadow to show */
+  overflow: visible;
+  transition:
+    opacity 420ms ease,
+    transform 10ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.content-column > #location-content {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  /* overflow: visible allows box-shadow to show */
+  overflow: visible;
+}
+
 /* Clip the needle-engine inside a rounded div */
 .map-canvas-clip {
   width: 100%;
@@ -91,6 +120,7 @@ a {
 
 body.landing-page.map-expanded .page-shell {
   width: calc(100% - 12px);
+  padding: 0 !important;
 }
 
 .topbar {
@@ -141,11 +171,14 @@ body.landing-page.map-expanded .page-shell {
 }
 
 .content-column {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   min-height: 0;
-  overflow: hidden;
+  flex: 1 1 0;
+  height: 100%;
+  /* overflow: visible allows box-shadow to show */
+  overflow: visible;
   transition:
     opacity 420ms ease,
     transform 10ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -159,7 +192,9 @@ body.landing-page.map-expanded .page-shell {
 .map-column {
   position: relative;
   display: flex;
+  flex-direction: column;
   min-width: 0;
+  flex: 0 0 450px;
   z-index: 2;
   transform-origin: right center;
   transition: transform 10ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -185,10 +220,33 @@ body.landing-page.map-expanded .map-column {
   width: 100%;
   z-index: 20;
 }
+body.landing-page.map-expanded .map-card,
+body.landing-page.map-expanded .map-canvas,
+body.landing-page.map-expanded .map-canvas-clip {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 
 .hero-copy {
-  max-width: 100%;
-  padding: 22px 0 50px 0;
+  width: 300px;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 48px 48px 48px 48px;
+  background: linear-gradient(180deg, rgba(16, 12, 16, 0.76), rgba(8, 9, 16, 0.93));
+  border-radius: var(--radius);
+  box-shadow: var(--panel-shadow), 0 12px 48px rgba(0,0,0,0.38), 0 2px 8px rgba(0,0,0,0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .hero-copy h1 {
@@ -335,11 +393,10 @@ body.landing-page.map-expanded .map-column {
   position: relative;
   top: 0;
   display: flex;
-  flex: 1;
+  flex: 1 1 0;
   flex-direction: column;
   gap: 12px;
   min-height: 0;
-  height: 100%;
   padding: 12px;
   border-radius: var(--radius);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -517,15 +574,8 @@ body.landing-page.map-expanded .map-canvas {
     overflow: hidden;
   }
 
-  body.landing-page.map-expanded .map-column {
-    position: fixed;
-    top: var(--expanded-map-top, 108px);
-    right: 10px;
-    bottom: 10px;
-    left: 10px;
-    width: auto;
-    z-index: 30;
-  }
+
+  /* removed orphaned properties */
 
   body.landing-page.map-expanded .map-card {
     height: 100%;

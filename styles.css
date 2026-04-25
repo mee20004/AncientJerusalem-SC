@@ -1,3 +1,26 @@
+/* Expand middle section when left panel is hidden */
+.dashboard-layout.no-left-column {
+  grid-template-columns: 0 minmax(0, 1fr) 450px;
+}
+
+.dashboard-layout.no-left-column .left-column {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* Hide middle content when left panel is visible */
+.dashboard-layout.left-open .content-column {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 420ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Clip the needle-engine inside a rounded div */
 .map-canvas-clip {
   width: 100%;
@@ -128,7 +151,7 @@ body.landing-page.map-expanded .page-shell {
 
 .dashboard-layout {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr) 450px;
+  grid-template-columns: 220px minmax(0, 1fr) 300px;
   flex: 1;
   gap: 16px;
   margin-top: 14px;
@@ -152,6 +175,16 @@ body.landing-page.map-expanded .page-shell {
   margin: 0;
   padding: 0;
   z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-40px);
+  transition: opacity 420ms cubic-bezier(0.4, 0, 0.2, 1), transform 420ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.left-column.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
 }
 
 .content-column {
@@ -576,4 +609,115 @@ body.landing-page.map-expanded .map-canvas {
   .hero-copy p {
     font-size: 0.98rem;
   }
+}
+
+/* Glassmorphic left sidebar styles */
+.left-column {
+  background: rgba(24, 26, 32, 0.82);
+  backdrop-filter: blur(12px);
+  border-radius: 28px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.32), var(--panel-shadow);
+  padding: 18px 18px 24px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 300px;
+  max-width: 300px;
+  width: 100%;
+  border: none;
+}
+
+.left-column .sidebar-title {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: #f0c94a;
+  margin-bottom: 0;
+  line-height: 1.1;
+}
+.left-column .sidebar-era {
+  font-size: 1rem;
+  color: #bfc3c7;
+  margin-bottom: 28px;
+  margin-top: 2px;
+}
+
+.left-column .sidebar-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.left-column .sidebar-tab {
+  background: rgba(120, 120, 130, 0.18);
+  color: #bfc3c7;
+  border: none;
+  border-radius: 22px;
+  padding: 13px 0;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.left-column .sidebar-tab.active {
+  background: linear-gradient(90deg, #e2c15a 80%, #f0c94a 100%);
+  color: #222;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(240,201,74,0.08);
+}
+
+.left-column .sidebar-desc-card {
+  max-height: 80%;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #e2c15a #222;
+}
+.left-column .sidebar-desc-card::-webkit-scrollbar {
+  width: 7px;
+}
+.left-column .sidebar-desc-card::-webkit-scrollbar-thumb {
+  background: #e2c15a;
+  border-radius: 8px;
+}
+.left-column .sidebar-desc-card::-webkit-scrollbar-track {
+  background: #222;
+  border-radius: 8px;
+}
+.left-column .sidebar-desc-card {
+  background: rgba(18, 18, 18, 0.72);
+  border-radius: 18px;
+  padding: 22px 18px 18px 18px;
+  color: #f2f0ea;
+  font-size: 1rem;
+  line-height: 1.38;
+  margin-bottom: 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+}
+
+.left-column .sidebar-action {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+}
+.left-column .sidebar-action-btn {
+  background: linear-gradient(90deg, #e2c15a 80%, #f0c94a 100%);
+  color: #222;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 0;
+  width: 100%;
+  font-size: 1.13rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(240,201,74,0.13);
+  transition: background 0.18s, box-shadow 0.18s;
+}
+.left-column .sidebar-action-btn:hover {
+  background: linear-gradient(90deg, #f0c94a 80%, #e2c15a 100%);
+  box-shadow: 0 4px 18px rgba(240,201,74,0.22);
 }

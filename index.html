@@ -49,7 +49,7 @@
             </div>
             <div class="map-canvas" aria-label="Blank map preview">
               <div class="map-canvas-clip">
-                <needle-engine src="assets/test.glb" camera-position="0 1 1" style="width:100%;height:110%;display:block;"></needle-engine>
+                <needle-engine src="assets/test.glb" camera-position="0 1 1" style="width:100%;height:120%;display:block;"></needle-engine>
               </div>
           </section>
         </aside>
@@ -125,6 +125,100 @@
           }
         });
       }
+
+      // Sidebar rendering logic
+      function renderSidebar(post) {
+        const leftColumn = document.querySelector('.left-column');
+        if (!leftColumn || !post) return;
+        leftColumn.innerHTML = `
+          <div class="sidebar-title">${post.title}</div>
+          <div class="sidebar-era">${post.time || ''}</div>
+          <div class="sidebar-tabs">
+            <button class="sidebar-tab active" data-tab="history">HISTORY</button>
+            <button class="sidebar-tab" data-tab="architecture">ARCHITECTURE</button>
+            <button class="sidebar-tab" data-tab="timeline">TIMELINE</button>
+            <button class="sidebar-tab" data-tab="artifacts">ARTIFACTS</button>
+          </div>
+          <div class="sidebar-desc-card" id="sidebar-tab-content"></div>
+          <div class="sidebar-action">
+            <button class="sidebar-action-btn"><span>⟳</span> Enter 360° View</button>
+          </div>
+        `;
+        // Initial content
+        renderSidebarTab(post, 'history');
+        // Tab switching
+        leftColumn.querySelectorAll('.sidebar-tab').forEach(btn => {
+          btn.addEventListener('click', function() {
+            leftColumn.querySelectorAll('.sidebar-tab').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            renderSidebarTab(post, this.dataset.tab);
+          });
+        });
+        // Action button (customize as needed)
+        leftColumn.querySelector('.sidebar-action-btn').addEventListener('click', () => {
+          alert('360° View coming soon!');
+        });
+      }
+      function typeText(element, text, speed = 5) {
+        element.textContent = '';
+        let i = 0;
+        function type() {
+          if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+          }
+        }
+        type();
+      }
+      function renderSidebarTab(post, tab) {
+        const content = document.getElementById('sidebar-tab-content');
+        if (!content) return;
+        if (tab === 'history') typeText(content, post.history || '');
+        else if (tab === 'architecture') typeText(content, post.architecture || '');
+        else if (tab === 'timeline') {
+          content.innerHTML = (post.timeline || []).map(ev => `<div><b>${ev.date}:</b> ${ev.event}</div>`).join('');
+        } else if (tab === 'artifacts') {
+          content.innerHTML = (post.artifacts || []).map(a => `<div><b>${a.name}:</b> ${a.description}</div>`).join('');
+        }
+      }
+
+      // Update left panel toggle logic to render sidebar
+      const leftColumn = document.querySelector('.left-column');
+      const dashboardLayout = document.querySelector('.dashboard-layout');
+      function updateDashboardLayout() {
+        if (leftColumn && dashboardLayout) {
+          if (leftColumn.classList.contains('visible')) {
+            dashboardLayout.classList.remove('no-left-column');
+            dashboardLayout.classList.add('left-open');
+          } else {
+            dashboardLayout.classList.add('no-left-column');
+            dashboardLayout.classList.remove('left-open');
+          }
+        }
+      }
+      // Update on toggle
+      document.addEventListener('click', function(e) {
+        const target = e.target.closest('.post-link');
+        if (target) {
+          e.preventDefault();
+          if (leftColumn) {
+            leftColumn.classList.toggle('visible');
+            // Find the post by id
+            const id = target.href.match(/id=(\d+)/);
+            const postId = id ? parseInt(id[1], 10) : null;
+            const post = (window.ancientJerusalemPosts || []).find(p => p.id === postId);
+            if (leftColumn.classList.contains('visible')) {
+              renderSidebar(post);
+            } else {
+              leftColumn.innerHTML = '';
+            }
+          }
+          updateDashboardLayout();
+        }
+      });
+      // Set initial state
+      updateDashboardLayout();
     </script>
   </body>
 </html>
